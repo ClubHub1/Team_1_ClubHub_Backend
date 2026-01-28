@@ -12,7 +12,7 @@ import type { UserService } from './User.class'
 export const userSchema = Type.Object(
   {
     user_id: Type.Number(),
-    school_email: Type.String(),
+    email: Type.String(),
     password: Type.Optional(Type.String()),
     first_name: Type.Optional(Type.String()),
     last_name: Type.Optional(Type.String())
@@ -29,7 +29,7 @@ export const userExternalResolver = resolve<User, HookContext<UserService>>({
 })
 
 // Schema for creating new entries
-export const userDataSchema = Type.Pick(userSchema, ['school_email', 'password'], {
+export const userDataSchema = Type.Pick(userSchema, ['email', 'password'], {
   $id: 'UserData'
 })
 export type UserData = Static<typeof userDataSchema>
@@ -49,7 +49,7 @@ export const userPatchResolver = resolve<UserPatch, HookContext<UserService>>({
 })
 
 // Schema for allowed query properties
-export const userQueryProperties = Type.Pick(userSchema, ['user_id', 'school_email'])
+export const userQueryProperties = Type.Pick(userSchema, ['user_id', 'email'])
 export const userQuerySchema = Type.Intersect(
   [
     querySyntax(userQueryProperties),
