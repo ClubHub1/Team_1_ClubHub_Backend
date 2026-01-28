@@ -10,10 +10,11 @@ import type { TaskService } from './Task.class'
 // Main data model schema
 export const taskSchema = Type.Object(
   {
-    id: Type.Number(),
-    text: Type.String()
+    task_id: Type.Number(),
+    club: Type.String(),
+    title: Type.String()
   },
-  { $id: 'Task', additionalProperties: false }
+  { $id: 'Task', additionalProperties: true }
 )
 export type Task = Static<typeof taskSchema>
 export const taskValidator = getValidator(taskSchema, dataValidator)
@@ -22,7 +23,7 @@ export const taskResolver = resolve<TaskQuery, HookContext<TaskService>>({})
 export const taskExternalResolver = resolve<Task, HookContext<TaskService>>({})
 
 // Schema for creating new entries
-export const taskDataSchema = Type.Pick(taskSchema, ['text'], {
+export const taskDataSchema = Type.Pick(taskSchema, ['title', 'club'], {
   $id: 'TaskData'
 })
 export type TaskData = Static<typeof taskDataSchema>
@@ -38,7 +39,7 @@ export const taskPatchValidator = getValidator(taskPatchSchema, dataValidator)
 export const taskPatchResolver = resolve<TaskPatch, HookContext<TaskService>>({})
 
 // Schema for allowed query properties
-export const taskQueryProperties = Type.Pick(taskSchema, ['id', 'text'])
+export const taskQueryProperties = Type.Pick(taskSchema, ['title', 'club'])
 export const taskQuerySchema = Type.Intersect(
   [
     querySyntax(taskQueryProperties),
