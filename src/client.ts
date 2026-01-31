@@ -4,6 +4,12 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { taskClient } from './services/Task/Task.shared'
+export type { Task, TaskData, TaskQuery, TaskPatch } from './services/Task/Task.shared'
+
+import { eventClient } from './services/Event/Event.shared'
+export type { Event, EventData, EventQuery, EventPatch } from './services/Event/Event.shared'
+
 import { clubClient } from './services/Club/Club.shared'
 export type { Club, ClubData, ClubQuery, ClubPatch } from './services/Club/Club.shared'
 
@@ -38,5 +44,7 @@ export const createClient = <Configuration = any,>(
 
   client.configure(userClient)
   client.configure(clubClient)
+  client.configure(eventClient)
+  client.configure(taskClient)
   return client
 }

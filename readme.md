@@ -6,6 +6,11 @@
 
 This project uses [Feathers](http://feathersjs.com). An open source framework for building APIs and real-time applications.
 
+To build feathers project use npm create feathers@latest <your repo name>
+
+Easiest to do this from within a docker container built on top of node-alpine, see Team_1_Clubhub Repository for docker compose file to build network
+between frontend, backend, database
+
 ## Getting Started
 
 1. Make sure you have [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
