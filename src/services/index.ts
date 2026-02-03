@@ -1,3 +1,4 @@
+import { clubMembership } from './Club Membership/Club Membership'
 import { attendance } from './Attendance/Attendance'
 import { task } from './Task/Task'
 import { event } from './Event/Event'
@@ -7,6 +8,7 @@ import { user } from './User/User'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(clubMembership)
   app.configure(attendance)
   app.configure(task)
   app.configure(event)
