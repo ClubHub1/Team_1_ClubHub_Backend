@@ -12,7 +12,13 @@ export const taskSchema = Type.Object(
   {
     task_id: Type.Number(),
     club: Type.String(),
-    title: Type.String()
+    title: Type.String(),
+    description: Type.String(),
+    due_date: Type.String(),
+    created_at: Type.String(),
+    updated_at: Type.String(),
+    priority: Type.String(),
+    status: Type.String()
   },
   { $id: 'Task', additionalProperties: true }
 )
@@ -23,7 +29,7 @@ export const taskResolver = resolve<TaskQuery, HookContext<TaskService>>({})
 export const taskExternalResolver = resolve<Task, HookContext<TaskService>>({})
 
 // Schema for creating new entries
-export const taskDataSchema = Type.Pick(taskSchema, ['title', 'club'], {
+export const taskDataSchema = Type.Pick(taskSchema, ['title', 'club', 'description', 'due_date', 'priority'], {
   $id: 'TaskData'
 })
 export type TaskData = Static<typeof taskDataSchema>

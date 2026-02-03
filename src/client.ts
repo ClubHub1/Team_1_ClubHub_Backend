@@ -4,6 +4,14 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { attendanceClient } from './services/Attendance/Attendance.shared'
+export type {
+  Attendance,
+  AttendanceData,
+  AttendanceQuery,
+  AttendancePatch
+} from './services/Attendance/Attendance.shared'
+
 import { taskClient } from './services/Task/Task.shared'
 export type { Task, TaskData, TaskQuery, TaskPatch } from './services/Task/Task.shared'
 
@@ -46,5 +54,6 @@ export const createClient = <Configuration = any,>(
   client.configure(clubClient)
   client.configure(eventClient)
   client.configure(taskClient)
+  client.configure(attendanceClient)
   return client
 }
