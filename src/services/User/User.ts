@@ -21,6 +21,8 @@ import { userPath, userMethods } from './User.shared'
 export * from './User.class'
 export * from './User.schema'
 
+const userEmailCheck = require('../../hooks/user-email-check');
+
 // A configure function that registers the service and its hooks via `app.configure`
 export const user = (app: Application) => {
   // Register our service on the Feathers application
@@ -45,7 +47,8 @@ export const user = (app: Application) => {
       all: [schemaHooks.validateQuery(userQueryValidator), schemaHooks.resolveQuery(userQueryResolver)],
       find: [],
       get: [],
-      create: [schemaHooks.validateData(userDataValidator), schemaHooks.resolveData(userDataResolver)],
+      create: [schemaHooks.validateData(userDataValidator), schemaHooks.resolveData(userDataResolver), 
+      userEmailCheck()],
       patch: [schemaHooks.validateData(userPatchValidator), schemaHooks.resolveData(userPatchResolver)],
       remove: []
     },
