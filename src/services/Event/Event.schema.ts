@@ -13,7 +13,11 @@ export const eventSchema = Type.Object(
     event_id: Type.Number(),
     club: Type.String(),
     name: Type.String(),
-    description: Type.String()
+    description: Type.String(),
+    start_datetime: Type.Optional(Type.String()),
+    end_datetime: Type.Optional(Type.String()),
+    location: Type.String(),
+    created_at: Type.String()
   },
   { $id: 'Event', additionalProperties: true }
 )
@@ -24,7 +28,7 @@ export const eventResolver = resolve<EventQuery, HookContext<EventService>>({})
 export const eventExternalResolver = resolve<Event, HookContext<EventService>>({})
 
 // Schema for creating new entries
-export const eventDataSchema = Type.Pick(eventSchema, ['club', 'name'], {
+export const eventDataSchema = Type.Pick(eventSchema, ['club', 'name', 'description', 'start_datetime', 'end_datetime', 'location', 'created_at'], {
   $id: 'EventData'
 })
 export type EventData = Static<typeof eventDataSchema>
@@ -40,7 +44,7 @@ export const eventPatchValidator = getValidator(eventPatchSchema, dataValidator)
 export const eventPatchResolver = resolve<EventPatch, HookContext<EventService>>({})
 
 // Schema for allowed query properties
-export const eventQueryProperties = Type.Pick(eventSchema, ['club', 'name'])
+export const eventQueryProperties = Type.Pick(eventSchema, ['event_id', 'name'])
 export const eventQuerySchema = Type.Intersect(
   [
     querySyntax(eventQueryProperties),
