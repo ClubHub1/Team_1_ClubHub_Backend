@@ -4,6 +4,46 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { fileResourceClient } from './services/File Resource/File Resource.shared'
+export type {
+  FileResource,
+  FileResourceData,
+  FileResourceQuery,
+  FileResourcePatch
+} from './services/File Resource/File Resource.shared'
+
+import { taskAssignmentClient } from './services/Task Assignment/Task Assignment.shared'
+export type {
+  TaskAssignment,
+  TaskAssignmentData,
+  TaskAssignmentQuery,
+  TaskAssignmentPatch
+} from './services/Task Assignment/Task Assignment.shared'
+
+import { taskAssignmentClient } from './services/TaskAssignment/TaskAssignment.shared'
+export type {
+  TaskAssignment,
+  TaskAssignmentData,
+  TaskAssignmentQuery,
+  TaskAssignmentPatch
+} from './services/TaskAssignment/TaskAssignment.shared'
+
+import { taskAssignmentClient } from './services/TaskAssignment/TaskAssignment.shared'
+export type {
+  TaskAssignment,
+  TaskAssignmentData,
+  TaskAssignmentQuery,
+  TaskAssignmentPatch
+} from './services/TaskAssignment/TaskAssignment.shared'
+
+import { notificationsClient } from './services/Notifications/Notifications.shared'
+export type {
+  Notifications,
+  NotificationsData,
+  NotificationsQuery,
+  NotificationsPatch
+} from './services/Notifications/Notifications.shared'
+
 import { clubMembershipClient } from './services/Club Membership/Club Membership.shared'
 export type {
   ClubMembership,
@@ -64,5 +104,10 @@ export const createClient = <Configuration = any,>(
   client.configure(taskClient)
   client.configure(attendanceClient)
   client.configure(clubMembershipClient)
+  client.configure(notificationsClient)
+  client.configure(taskAssignmentClient)
+  client.configure(taskAssignmentClient)
+  client.configure(taskAssignmentClient)
+  client.configure(fileResourceClient)
   return client
 }
