@@ -20,22 +20,6 @@ export type {
   TaskAssignmentPatch
 } from './services/Task Assignment/Task Assignment.shared'
 
-import { taskAssignmentClient } from './services/TaskAssignment/TaskAssignment.shared'
-export type {
-  TaskAssignment,
-  TaskAssignmentData,
-  TaskAssignmentQuery,
-  TaskAssignmentPatch
-} from './services/TaskAssignment/TaskAssignment.shared'
-
-import { taskAssignmentClient } from './services/TaskAssignment/TaskAssignment.shared'
-export type {
-  TaskAssignment,
-  TaskAssignmentData,
-  TaskAssignmentQuery,
-  TaskAssignmentPatch
-} from './services/TaskAssignment/TaskAssignment.shared'
-
 import { notificationsClient } from './services/Notifications/Notifications.shared'
 export type {
   Notifications,
