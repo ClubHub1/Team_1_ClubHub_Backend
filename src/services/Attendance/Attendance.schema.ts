@@ -10,9 +10,11 @@ import type { AttendanceService } from './Attendance.class'
 // Main data model schema
 export const attendanceSchema = Type.Object(
   {
-    id: Type.Number(), //CHANGE THIS SHIT
+    id: Type.Number(), 
     event: Type.Integer(),
-    user: Type.Integer()
+    user: Type.Integer(),
+    status: Type.String(),
+    time: Type.String()
   },
   { $id: 'Attendance', additionalProperties: true }
 )
@@ -23,7 +25,7 @@ export const attendanceResolver = resolve<AttendanceQuery, HookContext<Attendanc
 export const attendanceExternalResolver = resolve<Attendance, HookContext<AttendanceService>>({})
 
 // Schema for creating new entries
-export const attendanceDataSchema = Type.Pick(attendanceSchema, ['event', 'user'], {
+export const attendanceDataSchema = Type.Pick(attendanceSchema, ['event', 'user', 'status', 'time'], {
   $id: 'AttendanceData'
 })
 export type AttendanceData = Static<typeof attendanceDataSchema>
