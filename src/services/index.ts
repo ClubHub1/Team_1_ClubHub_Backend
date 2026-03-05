@@ -7,7 +7,10 @@ import { task } from './Task/Task'
 import { event } from './Event/Event'
 import { club } from './Club/Club'
 import { user } from './User/User'
-// For more information about this file see https://dove.feathersjs.com/guides/cli/application.html#configure-functions
+import { pCardRequest } from './PCardRequest/PCardRequest'
+import { travelRequest } from './TravelRequest/TravelRequest'
+import { transaction } from './Transaction/Transaction'
+import { clubTag } from './ClubTag/ClubTag'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
@@ -20,5 +23,8 @@ export const services = (app: Application) => {
   app.configure(event)
   app.configure(club)
   app.configure(user)
-  // All services will be registered here
+  app.configure(pCardRequest)
+  app.configure(travelRequest)
+  app.configure(transaction)
+  app.configure(clubTag)
 }
