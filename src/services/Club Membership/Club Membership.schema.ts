@@ -44,7 +44,7 @@ export const clubMembershipPatchResolver = resolve<ClubMembershipPatch, HookCont
 )
 
 // Schema for allowed query properties
-export const clubMembershipQueryProperties = Type.Pick(clubMembershipSchema, ['id', 'clubid', 'userid'])
+export const clubMembershipQueryProperties = Type.Pick(clubMembershipSchema, ['id', 'clubid', 'userid', 'role'])
 export const clubMembershipQuerySchema = Type.Intersect(
   [
     querySyntax(clubMembershipQueryProperties),

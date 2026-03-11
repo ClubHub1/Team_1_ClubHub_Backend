@@ -11,7 +11,7 @@ import type { UserService } from './User.class'
 // Main data model schema
 export const userSchema = Type.Object(
   {
-    user_id: Type.Number(),
+    id: Type.Number(),
     email: Type.String(),
     password: Type.Optional(Type.String()),
     first_name: Type.Optional(Type.String()),
@@ -51,7 +51,7 @@ export const userPatchResolver = resolve<UserPatch, HookContext<UserService>>({
 })
 
 // Schema for allowed query properties
-export const userQueryProperties = Type.Pick(userSchema, ['user_id', 'email'])
+export const userQueryProperties = Type.Pick(userSchema, ['id', 'email', 'first_name', 'last_name'])
 export const userQuerySchema = Type.Intersect(
   [
     querySyntax(userQueryProperties),
@@ -64,9 +64,9 @@ export type UserQuery = Static<typeof userQuerySchema>
 export const userQueryValidator = getValidator(userQuerySchema, queryValidator)
 export const userQueryResolver = resolve<UserQuery, HookContext<UserService>>({
   // If there is a user (e.g. with authentication), they are only allowed to see their own data
-  user_id: async (value, user, context) => {
+  id: async (value, user, context) => {
     if (context.params.User) {
-      return context.params.User.user_id
+      return context.params.User.id
     }
 
     return value
