@@ -11,7 +11,7 @@ import type { EventService } from './Event.class'
 export const eventSchema = Type.Object(
   {
     event_id: Type.Number(),
-    club: Type.String(),
+    club: Type.Number(),
     name: Type.String(),
     description: Type.String(),
     start_datetime: Type.Optional(Type.String()),
