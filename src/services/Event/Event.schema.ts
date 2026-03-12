@@ -11,7 +11,7 @@ import type { EventService } from './Event.class'
 export const eventSchema = Type.Object(
   {
     event_id: Type.Number(),
-    club: Type.String(),
+    club: Type.Number(),
     name: Type.String(),
     description: Type.String(),
     start_datetime: Type.Optional(Type.String()),
@@ -44,15 +44,16 @@ export const eventPatchValidator = getValidator(eventPatchSchema, dataValidator)
 export const eventPatchResolver = resolve<EventPatch, HookContext<EventService>>({})
 
 // Schema for allowed query properties
-export const eventQueryProperties = Type.Pick(eventSchema, ['event_id', 'name'])
+export const eventQueryProperties = Type.Pick(eventSchema, ['event_id', 'club', 'name', 'start_datetime', 'end_datetime', 'location'])
 export const eventQuerySchema = Type.Intersect(
   [
     querySyntax(eventQueryProperties),
     // Add additional query properties here
-    Type.Object({}, { additionalProperties: false })
+    Type.Object({}, { additionalProperties: true })
   ],
-  { additionalProperties: false }
+  { additionalProperties: true }
 )
+
 export type EventQuery = Static<typeof eventQuerySchema>
 export const eventQueryValidator = getValidator(eventQuerySchema, queryValidator)
 export const eventQueryResolver = resolve<EventQuery, HookContext<EventService>>({})
