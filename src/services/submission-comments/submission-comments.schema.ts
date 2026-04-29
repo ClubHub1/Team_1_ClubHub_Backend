@@ -1,0 +1,67 @@
+// // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
+import { resolve } from '@feathersjs/schema'
+import { Type, getValidator, querySyntax } from '@feathersjs/typebox'
+import type { Static } from '@feathersjs/typebox'
+
+import type { HookContext } from '../../declarations'
+import { dataValidator, queryValidator } from '../../validators'
+import type { SubmissionCommentsService } from './submission-comments.class'
+
+// Main data model schema
+export const submissionCommentsSchema = Type.Object(
+  {
+    id: Type.Number(),
+    text: Type.String()
+  },
+  { $id: 'SubmissionComments', additionalProperties: false }
+)
+export type SubmissionComments = Static<typeof submissionCommentsSchema>
+export const submissionCommentsValidator = getValidator(submissionCommentsSchema, dataValidator)
+export const submissionCommentsResolver = resolve<
+  SubmissionCommentsQuery,
+  HookContext<SubmissionCommentsService>
+>({})
+
+export const submissionCommentsExternalResolver = resolve<
+  SubmissionComments,
+  HookContext<SubmissionCommentsService>
+>({})
+
+// Schema for creating new entries
+export const submissionCommentsDataSchema = Type.Pick(submissionCommentsSchema, ['text'], {
+  $id: 'SubmissionCommentsData'
+})
+export type SubmissionCommentsData = Static<typeof submissionCommentsDataSchema>
+export const submissionCommentsDataValidator = getValidator(submissionCommentsDataSchema, dataValidator)
+export const submissionCommentsDataResolver = resolve<
+  SubmissionCommentsData,
+  HookContext<SubmissionCommentsService>
+>({})
+
+// Schema for updating existing entries
+export const submissionCommentsPatchSchema = Type.Partial(submissionCommentsSchema, {
+  $id: 'SubmissionCommentsPatch'
+})
+export type SubmissionCommentsPatch = Static<typeof submissionCommentsPatchSchema>
+export const submissionCommentsPatchValidator = getValidator(submissionCommentsPatchSchema, dataValidator)
+export const submissionCommentsPatchResolver = resolve<
+  SubmissionCommentsPatch,
+  HookContext<SubmissionCommentsService>
+>({})
+
+// Schema for allowed query properties
+export const submissionCommentsQueryProperties = Type.Pick(submissionCommentsSchema, ['id', 'text'])
+export const submissionCommentsQuerySchema = Type.Intersect(
+  [
+    querySyntax(submissionCommentsQueryProperties),
+    // Add additional query properties here
+    Type.Object({}, { additionalProperties: false })
+  ],
+  { additionalProperties: false }
+)
+export type SubmissionCommentsQuery = Static<typeof submissionCommentsQuerySchema>
+export const submissionCommentsQueryValidator = getValidator(submissionCommentsQuerySchema, queryValidator)
+export const submissionCommentsQueryResolver = resolve<
+  SubmissionCommentsQuery,
+  HookContext<SubmissionCommentsService>
+>({})

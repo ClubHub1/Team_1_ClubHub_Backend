@@ -1,3 +1,7 @@
+import { submissionComments } from './submission-comments/submission-comments'
+import { resourceCheckouts } from './resource-checkouts/resource-checkouts'
+import { travelRequests } from './travel-requests/travel-requests'
+import { pCardRequests } from './p-card-requests/p-card-requests'
 import { fileResource } from './File Resource/File Resource'
 import { taskAssignment } from './Task Assignment/Task Assignment'
 import { notifications } from './Notifications/Notifications'
@@ -11,6 +15,10 @@ import { user } from './User/User'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(submissionComments)
+  app.configure(resourceCheckouts)
+  app.configure(travelRequests)
+  app.configure(pCardRequests)
   app.configure(fileResource)
   app.configure(taskAssignment)
   app.configure(notifications)
