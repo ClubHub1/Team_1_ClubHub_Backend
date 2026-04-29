@@ -13,11 +13,11 @@ export const clubSchema = Type.Object(
     club_id: Type.Number(),
     name: Type.String(),
     description: Type.String(),
-    created_at: Type.String(),
-    //EITHER 'Active' OR 'Inactive'
-    activity_status: Type.String()
+    activity_status: Type.String(),
+    logo_url: Type.Optional(Type.String()),
+    created_at: Type.String()
   },
-  { $id: 'Club', additionalProperties: true }
+  { $id: 'Club', additionalProperties: false }
 )
 export type Club = Static<typeof clubSchema>
 export const clubValidator = getValidator(clubSchema, dataValidator)
@@ -26,8 +26,9 @@ export const clubResolver = resolve<ClubQuery, HookContext<ClubService>>({})
 export const clubExternalResolver = resolve<Club, HookContext<ClubService>>({})
 
 // Schema for creating new entries
-export const clubDataSchema = Type.Pick(clubSchema, ['name', 'description', 'created_at', 'activity_status'], {
-  $id: 'ClubData'
+export const clubDataSchema = Type.Pick(clubSchema, ['name', 'description', 'activity_status', 'logo_url', 'created_at'], {
+  $id: 'ClubData',
+  additionalProperties: false
 })
 export type ClubData = Static<typeof clubDataSchema>
 export const clubDataValidator = getValidator(clubDataSchema, dataValidator)
@@ -35,14 +36,15 @@ export const clubDataResolver = resolve<ClubData, HookContext<ClubService>>({})
 
 // Schema for updating existing entries
 export const clubPatchSchema = Type.Partial(clubSchema, {
-  $id: 'ClubPatch'
+  $id: 'ClubPatch',
+  additionalProperties: false
 })
 export type ClubPatch = Static<typeof clubPatchSchema>
 export const clubPatchValidator = getValidator(clubPatchSchema, dataValidator)
 export const clubPatchResolver = resolve<ClubPatch, HookContext<ClubService>>({})
 
 // Schema for allowed query properties
-export const clubQueryProperties = Type.Pick(clubSchema, ['club_id', 'name'])
+export const clubQueryProperties = Type.Pick(clubSchema, ['club_id', 'name', 'activity_status'])
 export const clubQuerySchema = Type.Intersect(
   [
     querySyntax(clubQueryProperties),

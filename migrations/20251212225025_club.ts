@@ -3,9 +3,12 @@ import type { Knex } from 'knex'
 
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('club', table => {
-    table.uuid('club_id')
-
-    table.string('text')
+    table.increments('id').primary()
+    table.string('name').notNullable()
+    table.text('description')
+    table.string('activity_status').notNullable()
+    table.string('logo_url').nullable()
+    table.timestamp('created_at').defaultTo(knex.fn.now())
   })
 }
 

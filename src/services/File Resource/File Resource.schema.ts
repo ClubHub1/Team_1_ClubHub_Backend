@@ -11,9 +11,12 @@ import type { FileResourceService } from './File Resource.class'
 export const fileResourceSchema = Type.Object(
   {
     id: Type.Number(),
-    club: Type.Integer(),
-    event: Type.Integer(),
+    club: Type.Optional(Type.Integer()),
+    event: Type.Optional(Type.Integer()),
     source_url: Type.String(),
+    file_name: Type.String(),
+    file_size: Type.String(),
+    mime_type: Type.String(),
     created_at: Type.String()
   },
   { $id: 'FileResource', additionalProperties: false }
@@ -25,7 +28,7 @@ export const fileResourceResolver = resolve<FileResourceQuery, HookContext<FileR
 export const fileResourceExternalResolver = resolve<FileResource, HookContext<FileResourceService>>({})
 
 // Schema for creating new entries
-export const fileResourceDataSchema = Type.Pick(fileResourceSchema, ['club', 'event', 'source_url', 'created_at'], {
+export const fileResourceDataSchema = Type.Pick(fileResourceSchema, ['club', 'event', 'source_url', 'file_name', 'file_size', 'mime_type'], {
   $id: 'FileResourceData'
 })
 export type FileResourceData = Static<typeof fileResourceDataSchema>
@@ -41,7 +44,7 @@ export const fileResourcePatchValidator = getValidator(fileResourcePatchSchema, 
 export const fileResourcePatchResolver = resolve<FileResourcePatch, HookContext<FileResourceService>>({})
 
 // Schema for allowed query properties
-export const fileResourceQueryProperties = Type.Pick(fileResourceSchema, ['club', 'event', 'source_url'])
+export const fileResourceQueryProperties = Type.Pick(fileResourceSchema, ['club', 'event', 'source_url', 'file_name', 'mime_type'])
 export const fileResourceQuerySchema = Type.Intersect(
   [
     querySyntax(fileResourceQueryProperties),

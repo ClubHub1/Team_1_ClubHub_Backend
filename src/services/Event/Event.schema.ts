@@ -44,7 +44,7 @@ export const eventPatchValidator = getValidator(eventPatchSchema, dataValidator)
 export const eventPatchResolver = resolve<EventPatch, HookContext<EventService>>({})
 
 // Schema for allowed query properties
-export const eventQueryProperties = Type.Pick(eventSchema, ['event_id', 'name'])
+export const eventQueryProperties = Type.Pick(eventSchema, ['event_id', 'name', 'club', 'start_datetime', 'end_datetime'])
 export const eventQuerySchema = Type.Intersect(
   [
     querySyntax(eventQueryProperties),

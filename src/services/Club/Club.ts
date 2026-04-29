@@ -31,7 +31,7 @@ export const club = (app: Application) => {
   const options: KnexAdapterOptions = {
     paginate: app.get('paginate'),
     Model: app.get('postgresqlClient'),
-    name: 'Club',
+    name: 'club',
     id: 'club_id'
   }
   app.use(clubPath, new ClubService(options)), {
