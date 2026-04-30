@@ -6,7 +6,6 @@ import type { Static } from '@feathersjs/typebox'
 import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import type { NotificationsService } from './Notifications.class'
-import { title } from 'process'
 
 // Main data model schema
 export const notificationsSchema = Type.Object(
@@ -33,6 +32,18 @@ export const notificationsDataSchema = Type.Pick(notificationsSchema, ['club', '
 export type NotificationsData = Static<typeof notificationsDataSchema>
 export const notificationsDataValidator = getValidator(notificationsDataSchema, dataValidator)
 export const notificationsDataResolver = resolve<NotificationsData, HookContext<NotificationsService>>({})
+export const notificationsCreateDataResolver = resolve<NotificationsData, HookContext<NotificationsService>>({
+  created_by: async (value, _data, context) => {
+    if (context.params.User?.id) {
+      return context.params.User.id
+    }
+
+    return value
+  },
+  created_at: async (value) => {
+    return value ?? new Date().toISOString()
+  }
+})
 
 // Schema for updating existing entries
 export const notificationsPatchSchema = Type.Partial(notificationsSchema, {

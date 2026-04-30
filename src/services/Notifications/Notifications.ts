@@ -9,7 +9,7 @@ import {
   notificationsQueryValidator,
   notificationsResolver,
   notificationsExternalResolver,
-  notificationsDataResolver,
+  notificationsCreateDataResolver,
   notificationsPatchResolver,
   notificationsQueryResolver
 } from './Notifications.schema'
@@ -48,7 +48,7 @@ export const notifications = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(notificationsDataValidator),
-        schemaHooks.resolveData(notificationsDataResolver)
+        schemaHooks.resolveData(notificationsCreateDataResolver)
       ],
       patch: [
         schemaHooks.validateData(notificationsPatchValidator),

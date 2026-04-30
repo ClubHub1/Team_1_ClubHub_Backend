@@ -1,5 +1,6 @@
 // For more information about this file see https://dove.feathersjs.com/guides/cli/service.html
 import { authenticate } from '@feathersjs/authentication'
+import { BadRequest, NotAuthenticated } from '@feathersjs/errors'
 
 import { hooks as schemaHooks } from '@feathersjs/schema'
 
@@ -23,6 +24,39 @@ export * from './User.schema'
 
 const userEmailCheck = require('../../hooks/user-email-check');
 
+const publicUserLookupFields = ['id', 'email', 'first_name', 'last_name', 'profile_photo_url'] as const
+
+const allowPublicEmailLookupOnly = async (context: any) => {
+  const { params } = context
+  const isExternal = Boolean(params.provider)
+  const isAuthenticated = Boolean(params.authentication || params.user || params.User)
+
+  if (!isExternal || isAuthenticated) {
+    return context
+  }
+
+  const query = params.query ?? {}
+  const queryKeys = Object.keys(query)
+  const allowedKeys = ['email', '$limit', '$select']
+  const hasOnlyAllowedKeys = queryKeys.every(key => allowedKeys.includes(key))
+
+  if (typeof query.email !== 'string' || query.email.trim() === '') {
+    throw new BadRequest('Public user lookup requires a non-empty email query.')
+  }
+
+  if (!hasOnlyAllowedKeys) {
+    throw new NotAuthenticated('Authentication is required for User queries other than email lookup.')
+  }
+
+  params.query = {
+    email: query.email.trim(),
+    $limit: 1,
+    $select: [...publicUserLookupFields]
+  }
+
+  return context
+}
+
 // A configure function that registers the service and its hooks via `app.configure`
 export const user = (app: Application) => {
   // Register our service on the Feathers application
@@ -36,7 +70,7 @@ export const user = (app: Application) => {
   app.service(userPath).hooks({
     around: {
       all: [schemaHooks.resolveExternal(userExternalResolver), schemaHooks.resolveResult(userResolver)],
-      find: [authenticate('jwt')],
+      find: [],
       get: [authenticate('jwt')],
       create: [],
       update: [authenticate('jwt')],
@@ -45,7 +79,7 @@ export const user = (app: Application) => {
     },
     before: {
       all: [schemaHooks.validateQuery(userQueryValidator), schemaHooks.resolveQuery(userQueryResolver)],
-      find: [],
+      find: [allowPublicEmailLookupOnly],
       get: [],
       create: [schemaHooks.validateData(userDataValidator), schemaHooks.resolveData(userDataResolver), 
       userEmailCheck()],

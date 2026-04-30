@@ -26,17 +26,39 @@ export const clubMembershipResolver = resolve<ClubMembershipQuery, HookContext<C
 export const clubMembershipExternalResolver = resolve<ClubMembership, HookContext<ClubMembershipService>>({})
 
 // Schema for creating new entries
-export const clubMembershipDataSchema = Type.Pick(clubMembershipSchema, ['clubid', 'userid', 'role', 'is_active', 'dues_paid'], {
-  $id: 'ClubMembershipData'
-})
+export const clubMembershipDataSchema = Type.Object(
+  {
+    clubid: Type.Number(),
+    userid: Type.Number(),
+    role: Type.String(),
+    is_active: Type.Boolean(),
+    dues_paid: Type.Boolean()
+  },
+  {
+    $id: 'ClubMembershipData',
+    additionalProperties: false
+  }
+)
 export type ClubMembershipData = Static<typeof clubMembershipDataSchema>
 export const clubMembershipDataValidator = getValidator(clubMembershipDataSchema, dataValidator)
 export const clubMembershipDataResolver = resolve<ClubMembershipData, HookContext<ClubMembershipService>>({})
 
 // Schema for updating existing entries
-export const clubMembershipPatchSchema = Type.Partial(clubMembershipSchema, {
-  $id: 'ClubMembershipPatch'
-})
+export const clubMembershipPatchSchema = Type.Partial(
+  Type.Object(
+    {
+      clubid: Type.Number(),
+      userid: Type.Number(),
+      role: Type.String(),
+      is_active: Type.Boolean(),
+      dues_paid: Type.Boolean()
+    },
+    { additionalProperties: false }
+  ),
+  {
+    $id: 'ClubMembershipPatch'
+  }
+)
 export type ClubMembershipPatch = Static<typeof clubMembershipPatchSchema>
 export const clubMembershipPatchValidator = getValidator(clubMembershipPatchSchema, dataValidator)
 export const clubMembershipPatchResolver = resolve<ClubMembershipPatch, HookContext<ClubMembershipService>>(
@@ -44,7 +66,14 @@ export const clubMembershipPatchResolver = resolve<ClubMembershipPatch, HookCont
 )
 
 // Schema for allowed query properties
-export const clubMembershipQueryProperties = Type.Pick(clubMembershipSchema, ['id', 'clubid', 'userid', 'role'])
+export const clubMembershipQueryProperties = Type.Pick(clubMembershipSchema, [
+  'id',
+  'clubid',
+  'userid',
+  'role',
+  'is_active',
+  'dues_paid'
+])
 export const clubMembershipQuerySchema = Type.Intersect(
   [
     querySyntax(clubMembershipQueryProperties),

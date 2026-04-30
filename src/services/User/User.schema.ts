@@ -17,6 +17,12 @@ export const userSchema = Type.Object(
     first_name: Type.Optional(Type.String()),
     last_name: Type.Optional(Type.String()),
     role: Type.String(),
+    profile_photo_url: Type.Optional(Type.String()),
+    bio: Type.Optional(Type.String()),
+    linkedin_url: Type.Optional(Type.String()),
+    twitter_url: Type.Optional(Type.String()),
+    instagram_url: Type.Optional(Type.String()),
+    facebook_url: Type.Optional(Type.String()),
     created_at: Type.String()
   },
   { $id: 'User', additionalProperties: true }
@@ -31,7 +37,7 @@ export const userExternalResolver = resolve<User, HookContext<UserService>>({
 })
 
 // Schema for creating new entries
-export const userDataSchema = Type.Pick(userSchema, ['email', 'password', 'first_name', 'last_name', 'role', 'created_at'], {
+export const userDataSchema = Type.Pick(userSchema, ['email', 'password', 'first_name', 'last_name', 'role', 'profile_photo_url', 'bio', 'linkedin_url', 'twitter_url', 'instagram_url', 'facebook_url'], {
   $id: 'UserData'
 })
 export type UserData = Static<typeof userDataSchema>
@@ -51,7 +57,7 @@ export const userPatchResolver = resolve<UserPatch, HookContext<UserService>>({
 })
 
 // Schema for allowed query properties
-export const userQueryProperties = Type.Pick(userSchema, ['id', 'email', 'first_name', 'last_name'])
+export const userQueryProperties = Type.Pick(userSchema, ['id', 'email', 'first_name', 'last_name', 'profile_photo_url'])
 export const userQuerySchema = Type.Intersect(
   [
     querySyntax(userQueryProperties),
@@ -65,7 +71,9 @@ export const userQueryValidator = getValidator(userQuerySchema, queryValidator)
 export const userQueryResolver = resolve<UserQuery, HookContext<UserService>>({
   // If there is a user (e.g. with authentication), they are only allowed to see their own data
   id: async (value, user, context) => {
-    if (context.params.User) {
+    const emailQuery = context.params.query?.email
+
+    if (context.params.User && !emailQuery && value === undefined) {
       return context.params.User.id
     }
 
