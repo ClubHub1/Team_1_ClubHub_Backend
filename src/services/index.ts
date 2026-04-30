@@ -1,3 +1,4 @@
+import { transactions } from './transactions/transactions'
 import { fileResource } from './File Resource/File Resource'
 import { taskAssignment } from './Task Assignment/Task Assignment'
 import { notifications } from './Notifications/Notifications'
@@ -11,6 +12,7 @@ import { user } from './User/User'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(transactions)
   app.configure(fileResource)
   app.configure(taskAssignment)
   app.configure(notifications)
