@@ -7,17 +7,21 @@ import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import type { SubmissionCommentsService } from './submission-comments.class'
 
+const nullableString = () => Type.Union([Type.String(), Type.Null()])
+const nullableNumber = () => Type.Union([Type.Number(), Type.Null()])
+const nullableBoolean = () => Type.Union([Type.Boolean(), Type.Null()])
+
 // Main data model schema
 export const submissionCommentsSchema = Type.Object(
   {
     id: Type.Number(),
-    submission_id: Type.Number(),
-    form_type: Type.String(),
-    author: Type.Optional(Type.String()),
-    author_id: Type.Optional(Type.Number()),
-    is_admin: Type.Optional(Type.Boolean()),
-    text: Type.String(),
-    created_at: Type.Optional(Type.String()),
+    submission_id: nullableNumber(),
+    form_type: nullableString(),
+    author: Type.Optional(nullableString()),
+    author_id: Type.Optional(nullableNumber()),
+    is_admin: Type.Optional(nullableBoolean()),
+    text: nullableString(),
+    created_at: Type.Optional(nullableString()),
   },
   { $id: 'SubmissionComments', additionalProperties: false }
 )
@@ -27,11 +31,11 @@ export const submissionCommentsResolver = resolve<SubmissionComments, HookContex
 export const submissionCommentsExternalResolver = resolve<SubmissionComments, HookContext<SubmissionCommentsService>>({})
 
 // Schema for creating new entries
-export const submissionCommentsDataSchema = Type.Pick(
+export const submissionCommentsDataSchema = Type.Partial(Type.Pick(
   submissionCommentsSchema,
   ['submission_id', 'form_type', 'author', 'author_id', 'is_admin', 'text'],
   { $id: 'SubmissionCommentsData' }
-)
+))
 export type SubmissionCommentsData = Static<typeof submissionCommentsDataSchema>
 export const submissionCommentsDataValidator = getValidator(submissionCommentsDataSchema, dataValidator)
 export const submissionCommentsDataResolver = resolve<SubmissionCommentsData, HookContext<SubmissionCommentsService>>({})

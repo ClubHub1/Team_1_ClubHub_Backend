@@ -29,6 +29,6 @@ export const getOptions = (app: Application): KnexAdapterOptions => {
   return {
     paginate: app.get('paginate'),
     Model: app.get('postgresqlClient'),
-    name: 'submission-comments'
+    name: 'submission_comments'
   }
 }

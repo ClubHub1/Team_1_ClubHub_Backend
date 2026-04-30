@@ -7,26 +7,30 @@ import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import type { TravelRequestsService } from './travel-requests.class'
 
+const nullableString = () => Type.Union([Type.String(), Type.Null()])
+const nullableNumber = () => Type.Union([Type.Number(), Type.Null()])
+const nullableBoolean = () => Type.Union([Type.Boolean(), Type.Null()])
+
 // Main data model schema
 export const travelRequestsSchema = Type.Object(
   {
     id: Type.Number(),
-    club: Type.Number(),
-    submitted_by: Type.Number(),
-    destination: Type.Optional(Type.String()),
-    departure_date: Type.Optional(Type.String()),
-    return_date: Type.Optional(Type.String()),
-    purpose: Type.Optional(Type.String()),
-    estimated_cost: Type.Optional(Type.Number()),
-    num_travelers: Type.Optional(Type.Number()),
-    traveler_names: Type.Optional(Type.String()),
-    transportation_type: Type.Optional(Type.String()),
-    lodging_required: Type.Optional(Type.Boolean()),
-    lodging_details: Type.Optional(Type.String()),
-    notes: Type.Optional(Type.String()),
-    status: Type.Optional(Type.String()),
-    created_at: Type.Optional(Type.String()),
-    updated_at: Type.Optional(Type.String()),
+    club: nullableNumber(),
+    submitted_by: nullableNumber(),
+    destination: Type.Optional(nullableString()),
+    departure_date: Type.Optional(nullableString()),
+    return_date: Type.Optional(nullableString()),
+    purpose: Type.Optional(nullableString()),
+    estimated_cost: Type.Optional(nullableNumber()),
+    num_travelers: Type.Optional(nullableNumber()),
+    traveler_names: Type.Optional(nullableString()),
+    transportation_type: Type.Optional(nullableString()),
+    lodging_required: Type.Optional(nullableBoolean()),
+    lodging_details: Type.Optional(nullableString()),
+    notes: Type.Optional(nullableString()),
+    status: Type.Optional(nullableString()),
+    created_at: Type.Optional(nullableString()),
+    updated_at: Type.Optional(nullableString()),
   },
   { $id: 'TravelRequests', additionalProperties: false }
 )
@@ -36,7 +40,7 @@ export const travelRequestsResolver = resolve<TravelRequests, HookContext<Travel
 export const travelRequestsExternalResolver = resolve<TravelRequests, HookContext<TravelRequestsService>>({})
 
 // Schema for creating new entries
-export const travelRequestsDataSchema = Type.Pick(
+export const travelRequestsDataSchema = Type.Partial(Type.Pick(
   travelRequestsSchema,
   [
     'club', 'submitted_by', 'destination', 'departure_date', 'return_date',
@@ -44,7 +48,7 @@ export const travelRequestsDataSchema = Type.Pick(
     'transportation_type', 'lodging_required', 'lodging_details', 'notes',
   ],
   { $id: 'TravelRequestsData' }
-)
+))
 export type TravelRequestsData = Static<typeof travelRequestsDataSchema>
 export const travelRequestsDataValidator = getValidator(travelRequestsDataSchema, dataValidator)
 export const travelRequestsDataResolver = resolve<TravelRequestsData, HookContext<TravelRequestsService>>({})
@@ -59,7 +63,7 @@ export const travelRequestsPatchResolver = resolve<TravelRequestsPatch, HookCont
 
 // Schema for allowed query properties
 export const travelRequestsQueryProperties = Type.Pick(travelRequestsSchema, [
-  'id', 'club', 'submitted_by', 'status'
+  'id', 'club', 'submitted_by', 'status', 'created_at', 'updated_at'
 ])
 export const travelRequestsQuerySchema = Type.Intersect(
   [

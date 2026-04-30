@@ -8,15 +8,17 @@
  * - submission_comments
  */
 
-export async function up(knex) {
+import type { Knex } from 'knex'
+
+export async function up(knex: Knex): Promise<void> {
   // ── Transactions ──────────────────────────────────────────────
   const hasTransactions = await knex.schema.hasTable('transactions')
   if (!hasTransactions) {
-    await knex.schema.createTable('transactions', (table) => {
+    await knex.schema.createTable('transactions', (table: Knex.TableBuilder) => {
       table.increments('id').primary()
-      table.integer('club').references('id').inTable('Club').onDelete('CASCADE')
-      table.integer('created_by').references('id').inTable('User')
-      table.integer('submitted_by').references('id').inTable('User')
+      table.integer('club').references('club_id').inTable('club').onDelete('CASCADE')
+      table.integer('created_by').references('id').inTable('user')
+      table.integer('submitted_by').references('id').inTable('user')
       table.string('type', 10).notNullable().checkIn(['income', 'expense'])
       table.string('title', 255).notNullable()
       table.decimal('amount', 10, 2).notNullable()
@@ -31,10 +33,10 @@ export async function up(knex) {
   // ── P-Card Requests ───────────────────────────────────────────
   const hasPCard = await knex.schema.hasTable('p_card_requests')
   if (!hasPCard) {
-    await knex.schema.createTable('p_card_requests', (table) => {
+    await knex.schema.createTable('p_card_requests', (table: Knex.TableBuilder) => {
       table.increments('id').primary()
-      table.integer('club').references('id').inTable('Club').onDelete('CASCADE')
-      table.integer('submitted_by').references('id').inTable('User')
+      table.integer('club').references('club_id').inTable('club').onDelete('CASCADE')
+      table.integer('submitted_by').references('id').inTable('user')
       // Requestor info
       table.string('first_name', 100)
       table.string('last_name', 100)
@@ -86,10 +88,10 @@ export async function up(knex) {
   // ── Travel Requests ───────────────────────────────────────────
   const hasTravel = await knex.schema.hasTable('travel_requests')
   if (!hasTravel) {
-    await knex.schema.createTable('travel_requests', (table) => {
+    await knex.schema.createTable('travel_requests', (table: Knex.TableBuilder) => {
       table.increments('id').primary()
-      table.integer('club').references('id').inTable('Club').onDelete('CASCADE')
-      table.integer('submitted_by').references('id').inTable('User')
+      table.integer('club').references('club_id').inTable('club').onDelete('CASCADE')
+      table.integer('submitted_by').references('id').inTable('user')
       table.string('destination', 255)
       table.date('departure_date')
       table.date('return_date')
@@ -111,10 +113,10 @@ export async function up(knex) {
   // ── Resource Checkouts ────────────────────────────────────────
   const hasResource = await knex.schema.hasTable('resource_checkouts')
   if (!hasResource) {
-    await knex.schema.createTable('resource_checkouts', (table) => {
+    await knex.schema.createTable('resource_checkouts', (table: Knex.TableBuilder) => {
       table.increments('id').primary()
-      table.integer('club').references('id').inTable('Club').onDelete('CASCADE')
-      table.integer('submitted_by').references('id').inTable('User')
+      table.integer('club').references('club_id').inTable('club').onDelete('CASCADE')
+      table.integer('submitted_by').references('id').inTable('user')
       table.string('full_name', 255)
       table.string('email', 255)
       table.string('club_name', 255)
@@ -145,12 +147,12 @@ export async function up(knex) {
   // ── Submission Comments ───────────────────────────────────────
   const hasComments = await knex.schema.hasTable('submission_comments')
   if (!hasComments) {
-    await knex.schema.createTable('submission_comments', (table) => {
+    await knex.schema.createTable('submission_comments', (table: Knex.TableBuilder) => {
       table.increments('id').primary()
       table.integer('submission_id').notNullable()
       table.string('form_type', 50).notNullable()
       table.string('author', 255)
-      table.integer('author_id').references('id').inTable('User')
+      table.integer('author_id').references('id').inTable('user')
       table.boolean('is_admin').defaultTo(false)
       table.text('text').notNullable()
       table.timestamp('created_at', { useTz: true }).defaultTo(knex.fn.now())
@@ -159,7 +161,7 @@ export async function up(knex) {
   }
 }
 
-export async function down(knex) {
+export async function down(knex: Knex): Promise<void> {
   await knex.schema.dropTableIfExists('submission_comments')
   await knex.schema.dropTableIfExists('resource_checkouts')
   await knex.schema.dropTableIfExists('travel_requests')

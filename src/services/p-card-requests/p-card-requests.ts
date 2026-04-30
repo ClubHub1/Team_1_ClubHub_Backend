@@ -21,6 +21,20 @@ import { pCardRequestsPath, pCardRequestsMethods } from './p-card-requests.share
 export * from './p-card-requests.class'
 export * from './p-card-requests.schema'
 
+const normalizePCardRequestData = async (context: any) => {
+  const { data } = context
+
+  if (!data || Array.isArray(data)) {
+    return context
+  }
+
+  if (data.vendors !== undefined && data.vendors !== null) {
+    data.vendors = JSON.stringify(data.vendors)
+  }
+
+  return context
+}
+
 // A configure function that registers the service and its hooks via `app.configure`
 export const pCardRequests = (app: Application) => {
   // Register our service on the Feathers application
@@ -48,11 +62,13 @@ export const pCardRequests = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(pCardRequestsDataValidator),
-        schemaHooks.resolveData(pCardRequestsDataResolver)
+        schemaHooks.resolveData(pCardRequestsDataResolver),
+        normalizePCardRequestData
       ],
       patch: [
         schemaHooks.validateData(pCardRequestsPatchValidator),
-        schemaHooks.resolveData(pCardRequestsPatchResolver)
+        schemaHooks.resolveData(pCardRequestsPatchResolver),
+        normalizePCardRequestData
       ],
       remove: []
     },

@@ -7,20 +7,23 @@ import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import type { TransactionsService } from './transactions.class'
 
+const nullableString = () => Type.Union([Type.String(), Type.Null()])
+const nullableNumber = () => Type.Union([Type.Number(), Type.Null()])
+
 // Main data model schema
 export const transactionsSchema = Type.Object(
   {
     id: Type.Number(),
-    club: Type.Number(),
-    created_by: Type.Number(),
-    submitted_by: Type.Optional(Type.Number()),
-    type: Type.Union([Type.Literal('income'), Type.Literal('expense')]),
-    title: Type.String(),
-    amount: Type.Number(),
-    description: Type.Optional(Type.String()),
-    transaction_date: Type.String(),
-    category: Type.String(),
-    created_at: Type.Optional(Type.String()),
+    club: nullableNumber(),
+    created_by: nullableNumber(),
+    submitted_by: Type.Optional(nullableNumber()),
+    type: Type.Union([Type.Literal('income'), Type.Literal('expense'), Type.Null()]),
+    title: nullableString(),
+    amount: nullableNumber(),
+    description: Type.Optional(nullableString()),
+    transaction_date: nullableString(),
+    category: nullableString(),
+    created_at: Type.Optional(nullableString()),
   },
   { $id: 'Transactions', additionalProperties: false }
 )
@@ -30,11 +33,11 @@ export const transactionsResolver = resolve<Transactions, HookContext<Transactio
 export const transactionsExternalResolver = resolve<Transactions, HookContext<TransactionsService>>({})
 
 // Schema for creating new entries
-export const transactionsDataSchema = Type.Pick(
+export const transactionsDataSchema = Type.Partial(Type.Pick(
   transactionsSchema,
   ['club', 'created_by', 'type', 'title', 'amount', 'description', 'transaction_date', 'category'],
   { $id: 'TransactionsData' }
-)
+))
 export type TransactionsData = Static<typeof transactionsDataSchema>
 export const transactionsDataValidator = getValidator(transactionsDataSchema, dataValidator)
 export const transactionsDataResolver = resolve<TransactionsData, HookContext<TransactionsService>>({})

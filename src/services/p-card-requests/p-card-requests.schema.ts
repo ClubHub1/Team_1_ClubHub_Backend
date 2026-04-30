@@ -7,56 +7,70 @@ import type { HookContext } from '../../declarations'
 import { dataValidator, queryValidator } from '../../validators'
 import type { PCardRequestsService } from './p-card-requests.class'
 
+const nullableString = () => Type.Union([Type.String(), Type.Null()])
+const nullableNumber = () => Type.Union([Type.Number(), Type.Null()])
+const nullableBoolean = () => Type.Union([Type.Boolean(), Type.Null()])
+const vendorSchema = Type.Object(
+  {
+    receipt_url: nullableString(),
+    vendor_name: nullableString(),
+    approximate_amount: nullableNumber(),
+    items_to_purchase: nullableString(),
+    reason_for_purchase: nullableString()
+  },
+  { additionalProperties: false }
+)
+
 // Main data model schema
 export const pCardRequestsSchema = Type.Object(
   {
     id: Type.Number(),
-    club: Type.Number(),
-    submitted_by: Type.Number(),
+    club: nullableNumber(),
+    submitted_by: nullableNumber(),
     // Requestor info
-    first_name: Type.Optional(Type.String()),
-    last_name: Type.Optional(Type.String()),
-    club_name: Type.Optional(Type.String()),
+    first_name: Type.Optional(nullableString()),
+    last_name: Type.Optional(nullableString()),
+    club_name: Type.Optional(nullableString()),
     // Yes/No questions
-    packages_delivered: Type.Optional(Type.Boolean()),
-    is_travel: Type.Optional(Type.Boolean()),
-    is_gift: Type.Optional(Type.Boolean()),
-    is_print: Type.Optional(Type.Boolean()),
-    is_event: Type.Optional(Type.Boolean()),
+    packages_delivered: Type.Optional(nullableBoolean()),
+    is_travel: Type.Optional(nullableBoolean()),
+    is_gift: Type.Optional(nullableBoolean()),
+    is_print: Type.Optional(nullableBoolean()),
+    is_event: Type.Optional(nullableBoolean()),
     // Vendors & funding
-    num_vendors: Type.Optional(Type.Number()),
-    funding_sources: Type.Optional(Type.String()),
-    transaction_detail: Type.Optional(Type.String()),
-    asun_funding_info: Type.Optional(Type.String()),
+    num_vendors: Type.Optional(nullableNumber()),
+    funding_sources: Type.Optional(nullableString()),
+    transaction_detail: Type.Optional(nullableString()),
+    asun_funding_info: Type.Optional(nullableString()),
     // Conditional sections
-    prize_receipt_acknowledged: Type.Optional(Type.Boolean()),
-    using_unr_logo: Type.Optional(Type.Boolean()),
-    logo_description: Type.Optional(Type.String()),
-    design_file_url: Type.Optional(Type.String()),
-    print_release_number: Type.Optional(Type.String()),
+    prize_receipt_acknowledged: Type.Optional(nullableBoolean()),
+    using_unr_logo: Type.Optional(nullableBoolean()),
+    logo_description: Type.Optional(nullableString()),
+    design_file_url: Type.Optional(nullableString()),
+    print_release_number: Type.Optional(nullableString()),
     // Event info
-    event_name: Type.Optional(Type.String()),
-    event_location: Type.Optional(Type.String()),
-    event_date: Type.Optional(Type.String()),
-    event_timeframe: Type.Optional(Type.String()),
-    num_attendees: Type.Optional(Type.Number()),
-    attendee_names: Type.Optional(Type.String()),
-    flyer_url: Type.Optional(Type.String()),
+    event_name: Type.Optional(nullableString()),
+    event_location: Type.Optional(nullableString()),
+    event_date: Type.Optional(nullableString()),
+    event_timeframe: Type.Optional(nullableString()),
+    num_attendees: Type.Optional(nullableNumber()),
+    attendee_names: Type.Optional(nullableString()),
+    flyer_url: Type.Optional(nullableString()),
     // Vendor details
-    vendors: Type.Optional(Type.String()),
+    vendors: Type.Optional(Type.Union([Type.Array(vendorSchema), Type.Null()])),
     // Department funding
-    department_account: Type.Optional(Type.String()),
-    budget_approved: Type.Optional(Type.String()),
-    public_meeting_date: Type.Optional(Type.String()),
+    department_account: Type.Optional(nullableString()),
+    budget_approved: Type.Optional(nullableString()),
+    public_meeting_date: Type.Optional(nullableString()),
     // Signatures
-    email: Type.Optional(Type.String()),
-    asun_employee_verified: Type.Optional(Type.Boolean()),
-    officer_signature: Type.Optional(Type.Boolean()),
-    faculty_signature: Type.Optional(Type.Boolean()),
+    email: Type.Optional(nullableString()),
+    asun_employee_verified: Type.Optional(nullableBoolean()),
+    officer_signature: Type.Optional(nullableBoolean()),
+    faculty_signature: Type.Optional(nullableBoolean()),
     // Status & timestamps
-    status: Type.Optional(Type.String()),
-    created_at: Type.Optional(Type.String()),
-    updated_at: Type.Optional(Type.String()),
+    status: Type.Optional(nullableString()),
+    created_at: Type.Optional(nullableString()),
+    updated_at: Type.Optional(nullableString()),
   },
   { $id: 'PCardRequests', additionalProperties: false }
 )
@@ -66,7 +80,7 @@ export const pCardRequestsResolver = resolve<PCardRequests, HookContext<PCardReq
 export const pCardRequestsExternalResolver = resolve<PCardRequests, HookContext<PCardRequestsService>>({})
 
 // Schema for creating new entries
-export const pCardRequestsDataSchema = Type.Pick(
+export const pCardRequestsDataSchema = Type.Partial(Type.Pick(
   pCardRequestsSchema,
   [
     'club', 'submitted_by', 'first_name', 'last_name', 'club_name',
@@ -79,7 +93,7 @@ export const pCardRequestsDataSchema = Type.Pick(
     'email', 'asun_employee_verified', 'officer_signature', 'faculty_signature',
   ],
   { $id: 'PCardRequestsData' }
-)
+))
 export type PCardRequestsData = Static<typeof pCardRequestsDataSchema>
 export const pCardRequestsDataValidator = getValidator(pCardRequestsDataSchema, dataValidator)
 export const pCardRequestsDataResolver = resolve<PCardRequestsData, HookContext<PCardRequestsService>>({})
@@ -94,7 +108,7 @@ export const pCardRequestsPatchResolver = resolve<PCardRequestsPatch, HookContex
 
 // Schema for allowed query properties
 export const pCardRequestsQueryProperties = Type.Pick(pCardRequestsSchema, [
-  'id', 'club', 'submitted_by', 'status'
+  'id', 'club', 'submitted_by', 'status', 'created_at', 'updated_at'
 ])
 export const pCardRequestsQuerySchema = Type.Intersect(
   [
