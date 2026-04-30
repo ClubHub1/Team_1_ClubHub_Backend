@@ -4,6 +4,38 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { submissionCommentsClient } from './services/submission-comments/submission-comments.shared'
+export type {
+  SubmissionComments,
+  SubmissionCommentsData,
+  SubmissionCommentsQuery,
+  SubmissionCommentsPatch
+} from './services/submission-comments/submission-comments.shared'
+
+import { resourceCheckoutsClient } from './services/resource-checkouts/resource-checkouts.shared'
+export type {
+  ResourceCheckouts,
+  ResourceCheckoutsData,
+  ResourceCheckoutsQuery,
+  ResourceCheckoutsPatch
+} from './services/resource-checkouts/resource-checkouts.shared'
+
+import { travelRequestsClient } from './services/travel-requests/travel-requests.shared'
+export type {
+  TravelRequests,
+  TravelRequestsData,
+  TravelRequestsQuery,
+  TravelRequestsPatch
+} from './services/travel-requests/travel-requests.shared'
+
+import { pCardRequestsClient } from './services/p-card-requests/p-card-requests.shared'
+export type {
+  PCardRequests,
+  PCardRequestsData,
+  PCardRequestsQuery,
+  PCardRequestsPatch
+} from './services/p-card-requests/p-card-requests.shared'
+
 import { fileResourceClient } from './services/File Resource/File Resource.shared'
 export type {
   FileResource,
@@ -93,5 +125,9 @@ export const createClient = <Configuration = any,>(
   client.configure(taskAssignmentClient)
   client.configure(taskAssignmentClient)
   client.configure(fileResourceClient)
+  client.configure(pCardRequestsClient)
+  client.configure(travelRequestsClient)
+  client.configure(resourceCheckoutsClient)
+  client.configure(submissionCommentsClient)
   return client
 }
