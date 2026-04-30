@@ -4,6 +4,14 @@ import type { TransportConnection, Application } from '@feathersjs/feathers'
 import authenticationClient from '@feathersjs/authentication-client'
 import type { AuthenticationClientOptions } from '@feathersjs/authentication-client'
 
+import { transactionsClient } from './services/transactions/transactions.shared'
+export type {
+  Transactions,
+  TransactionsData,
+  TransactionsQuery,
+  TransactionsPatch
+} from './services/transactions/transactions.shared'
+
 import { submissionCommentsClient } from './services/submission-comments/submission-comments.shared'
 export type {
   SubmissionComments,
@@ -125,6 +133,7 @@ export const createClient = <Configuration = any,>(
   client.configure(taskAssignmentClient)
   client.configure(taskAssignmentClient)
   client.configure(fileResourceClient)
+  client.configure(transactionsClient)
   client.configure(pCardRequestsClient)
   client.configure(travelRequestsClient)
   client.configure(resourceCheckoutsClient)

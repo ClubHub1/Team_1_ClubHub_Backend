@@ -1,3 +1,4 @@
+import { transactions } from './transactions/transactions'
 import { submissionComments } from './submission-comments/submission-comments'
 import { resourceCheckouts } from './resource-checkouts/resource-checkouts'
 import { travelRequests } from './travel-requests/travel-requests'
@@ -15,6 +16,7 @@ import { user } from './User/User'
 import type { Application } from '../declarations'
 
 export const services = (app: Application) => {
+  app.configure(transactions)
   app.configure(submissionComments)
   app.configure(resourceCheckouts)
   app.configure(travelRequests)
