@@ -1,4 +1,4 @@
-// // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
+// For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
 import { resolve } from '@feathersjs/schema'
 import { Type, getValidator, querySyntax } from '@feathersjs/typebox'
 import type { Static } from '@feathersjs/typebox'
@@ -11,20 +11,30 @@ import type { TransactionsService } from './transactions.class'
 export const transactionsSchema = Type.Object(
   {
     id: Type.Number(),
-    text: Type.String()
+    club: Type.Number(),
+    created_by: Type.Number(),
+    submitted_by: Type.Optional(Type.Number()),
+    type: Type.Union([Type.Literal('income'), Type.Literal('expense')]),
+    title: Type.String(),
+    amount: Type.Number(),
+    description: Type.Optional(Type.String()),
+    transaction_date: Type.String(),
+    category: Type.String(),
+    created_at: Type.Optional(Type.String()),
   },
   { $id: 'Transactions', additionalProperties: false }
 )
 export type Transactions = Static<typeof transactionsSchema>
 export const transactionsValidator = getValidator(transactionsSchema, dataValidator)
-export const transactionsResolver = resolve<TransactionsQuery, HookContext<TransactionsService>>({})
-
+export const transactionsResolver = resolve<Transactions, HookContext<TransactionsService>>({})
 export const transactionsExternalResolver = resolve<Transactions, HookContext<TransactionsService>>({})
 
 // Schema for creating new entries
-export const transactionsDataSchema = Type.Pick(transactionsSchema, ['text'], {
-  $id: 'TransactionsData'
-})
+export const transactionsDataSchema = Type.Pick(
+  transactionsSchema,
+  ['club', 'created_by', 'type', 'title', 'amount', 'description', 'transaction_date', 'category'],
+  { $id: 'TransactionsData' }
+)
 export type TransactionsData = Static<typeof transactionsDataSchema>
 export const transactionsDataValidator = getValidator(transactionsDataSchema, dataValidator)
 export const transactionsDataResolver = resolve<TransactionsData, HookContext<TransactionsService>>({})
@@ -38,11 +48,12 @@ export const transactionsPatchValidator = getValidator(transactionsPatchSchema, 
 export const transactionsPatchResolver = resolve<TransactionsPatch, HookContext<TransactionsService>>({})
 
 // Schema for allowed query properties
-export const transactionsQueryProperties = Type.Pick(transactionsSchema, ['id', 'text'])
+export const transactionsQueryProperties = Type.Pick(transactionsSchema, [
+  'id', 'club', 'created_by', 'type', 'category', 'transaction_date'
+])
 export const transactionsQuerySchema = Type.Intersect(
   [
     querySyntax(transactionsQueryProperties),
-    // Add additional query properties here
     Type.Object({}, { additionalProperties: false })
   ],
   { additionalProperties: false }

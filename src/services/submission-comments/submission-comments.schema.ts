@@ -1,4 +1,4 @@
-// // For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
+// For more information about this file see https://dove.feathersjs.com/guides/cli/service.schemas.html
 import { resolve } from '@feathersjs/schema'
 import { Type, getValidator, querySyntax } from '@feathersjs/typebox'
 import type { Static } from '@feathersjs/typebox'
@@ -11,32 +11,30 @@ import type { SubmissionCommentsService } from './submission-comments.class'
 export const submissionCommentsSchema = Type.Object(
   {
     id: Type.Number(),
-    text: Type.String()
+    submission_id: Type.Number(),
+    form_type: Type.String(),
+    author: Type.Optional(Type.String()),
+    author_id: Type.Optional(Type.Number()),
+    is_admin: Type.Optional(Type.Boolean()),
+    text: Type.String(),
+    created_at: Type.Optional(Type.String()),
   },
   { $id: 'SubmissionComments', additionalProperties: false }
 )
 export type SubmissionComments = Static<typeof submissionCommentsSchema>
 export const submissionCommentsValidator = getValidator(submissionCommentsSchema, dataValidator)
-export const submissionCommentsResolver = resolve<
-  SubmissionCommentsQuery,
-  HookContext<SubmissionCommentsService>
->({})
-
-export const submissionCommentsExternalResolver = resolve<
-  SubmissionComments,
-  HookContext<SubmissionCommentsService>
->({})
+export const submissionCommentsResolver = resolve<SubmissionComments, HookContext<SubmissionCommentsService>>({})
+export const submissionCommentsExternalResolver = resolve<SubmissionComments, HookContext<SubmissionCommentsService>>({})
 
 // Schema for creating new entries
-export const submissionCommentsDataSchema = Type.Pick(submissionCommentsSchema, ['text'], {
-  $id: 'SubmissionCommentsData'
-})
+export const submissionCommentsDataSchema = Type.Pick(
+  submissionCommentsSchema,
+  ['submission_id', 'form_type', 'author', 'author_id', 'is_admin', 'text'],
+  { $id: 'SubmissionCommentsData' }
+)
 export type SubmissionCommentsData = Static<typeof submissionCommentsDataSchema>
 export const submissionCommentsDataValidator = getValidator(submissionCommentsDataSchema, dataValidator)
-export const submissionCommentsDataResolver = resolve<
-  SubmissionCommentsData,
-  HookContext<SubmissionCommentsService>
->({})
+export const submissionCommentsDataResolver = resolve<SubmissionCommentsData, HookContext<SubmissionCommentsService>>({})
 
 // Schema for updating existing entries
 export const submissionCommentsPatchSchema = Type.Partial(submissionCommentsSchema, {
@@ -44,24 +42,19 @@ export const submissionCommentsPatchSchema = Type.Partial(submissionCommentsSche
 })
 export type SubmissionCommentsPatch = Static<typeof submissionCommentsPatchSchema>
 export const submissionCommentsPatchValidator = getValidator(submissionCommentsPatchSchema, dataValidator)
-export const submissionCommentsPatchResolver = resolve<
-  SubmissionCommentsPatch,
-  HookContext<SubmissionCommentsService>
->({})
+export const submissionCommentsPatchResolver = resolve<SubmissionCommentsPatch, HookContext<SubmissionCommentsService>>({})
 
 // Schema for allowed query properties
-export const submissionCommentsQueryProperties = Type.Pick(submissionCommentsSchema, ['id', 'text'])
+export const submissionCommentsQueryProperties = Type.Pick(submissionCommentsSchema, [
+  'id', 'submission_id', 'form_type', 'author_id'
+])
 export const submissionCommentsQuerySchema = Type.Intersect(
   [
     querySyntax(submissionCommentsQueryProperties),
-    // Add additional query properties here
     Type.Object({}, { additionalProperties: false })
   ],
   { additionalProperties: false }
 )
 export type SubmissionCommentsQuery = Static<typeof submissionCommentsQuerySchema>
 export const submissionCommentsQueryValidator = getValidator(submissionCommentsQuerySchema, queryValidator)
-export const submissionCommentsQueryResolver = resolve<
-  SubmissionCommentsQuery,
-  HookContext<SubmissionCommentsService>
->({})
+export const submissionCommentsQueryResolver = resolve<SubmissionCommentsQuery, HookContext<SubmissionCommentsService>>({})
