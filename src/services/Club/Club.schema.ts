@@ -15,6 +15,7 @@ export const clubSchema = Type.Object(
     description: Type.String(),
     activity_status: Type.String(),
     logo_url: Type.Optional(Type.String()),
+    tags: Type.Optional(Type.Array(Type.String())),
     created_at: Type.String()
   },
   { $id: 'Club', additionalProperties: false }
@@ -26,7 +27,7 @@ export const clubResolver = resolve<ClubQuery, HookContext<ClubService>>({})
 export const clubExternalResolver = resolve<Club, HookContext<ClubService>>({})
 
 // Schema for creating new entries
-export const clubDataSchema = Type.Pick(clubSchema, ['name', 'description', 'activity_status', 'logo_url', 'created_at'], {
+export const clubDataSchema = Type.Pick(clubSchema, ['name', 'description', 'activity_status', 'logo_url', 'tags', 'created_at'], {
   $id: 'ClubData',
   additionalProperties: false
 })

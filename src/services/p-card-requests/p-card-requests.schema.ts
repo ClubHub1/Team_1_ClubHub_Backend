@@ -91,6 +91,7 @@ export const pCardRequestsDataSchema = Type.Partial(Type.Pick(
     'event_date', 'event_timeframe', 'num_attendees', 'attendee_names', 'flyer_url',
     'vendors', 'department_account', 'budget_approved', 'public_meeting_date',
     'email', 'asun_employee_verified', 'officer_signature', 'faculty_signature',
+    'status', 'created_at', 'updated_at'
   ],
   { $id: 'PCardRequestsData' }
 ))

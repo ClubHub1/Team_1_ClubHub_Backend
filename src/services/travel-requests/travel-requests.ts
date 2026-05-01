@@ -21,6 +21,32 @@ import { travelRequestsPath, travelRequestsMethods } from './travel-requests.sha
 export * from './travel-requests.class'
 export * from './travel-requests.schema'
 
+const normalizeTravelRequestData = async (context: any) => {
+  const { data } = context
+
+  if (!data || Array.isArray(data)) {
+    return context
+  }
+
+  if (data.submitted_by === undefined && data.requested_by !== undefined) {
+    data.submitted_by = data.requested_by
+  }
+
+  if (data.transportation_type === undefined && data.transportation !== undefined) {
+    data.transportation_type = data.transportation
+  }
+
+  if (data.lodging_details === undefined && data.lodging !== undefined) {
+    data.lodging_details = data.lodging
+  }
+
+  delete data.requested_by
+  delete data.transportation
+  delete data.lodging
+
+  return context
+}
+
 // A configure function that registers the service and its hooks via `app.configure`
 export const travelRequests = (app: Application) => {
   // Register our service on the Feathers application
@@ -48,11 +74,13 @@ export const travelRequests = (app: Application) => {
       get: [],
       create: [
         schemaHooks.validateData(travelRequestsDataValidator),
-        schemaHooks.resolveData(travelRequestsDataResolver)
+        schemaHooks.resolveData(travelRequestsDataResolver),
+        normalizeTravelRequestData
       ],
       patch: [
         schemaHooks.validateData(travelRequestsPatchValidator),
-        schemaHooks.resolveData(travelRequestsPatchResolver)
+        schemaHooks.resolveData(travelRequestsPatchResolver),
+        normalizeTravelRequestData
       ],
       remove: []
     },

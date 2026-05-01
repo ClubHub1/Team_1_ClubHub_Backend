@@ -10,6 +10,7 @@ import type { TravelRequestsService } from './travel-requests.class'
 const nullableString = () => Type.Union([Type.String(), Type.Null()])
 const nullableNumber = () => Type.Union([Type.Number(), Type.Null()])
 const nullableBoolean = () => Type.Union([Type.Boolean(), Type.Null()])
+const nullableInputNumber = () => Type.Union([Type.Number(), Type.String(), Type.Null()])
 
 // Main data model schema
 export const travelRequestsSchema = Type.Object(
@@ -40,18 +41,77 @@ export const travelRequestsResolver = resolve<TravelRequests, HookContext<Travel
 export const travelRequestsExternalResolver = resolve<TravelRequests, HookContext<TravelRequestsService>>({})
 
 // Schema for creating new entries
-export const travelRequestsDataSchema = Type.Partial(Type.Pick(
-  travelRequestsSchema,
-  [
-    'club', 'submitted_by', 'destination', 'departure_date', 'return_date',
-    'purpose', 'estimated_cost', 'num_travelers', 'traveler_names',
-    'transportation_type', 'lodging_required', 'lodging_details', 'notes',
-  ],
-  { $id: 'TravelRequestsData' }
-))
+export const travelRequestsDataSchema = Type.Partial(
+  Type.Object(
+    {
+      club: nullableInputNumber(),
+      submitted_by: nullableInputNumber(),
+      requested_by: Type.Optional(nullableInputNumber()),
+      destination: Type.Optional(nullableString()),
+      departure_date: Type.Optional(nullableString()),
+      return_date: Type.Optional(nullableString()),
+      purpose: Type.Optional(nullableString()),
+      estimated_cost: Type.Optional(nullableInputNumber()),
+      num_travelers: Type.Optional(nullableInputNumber()),
+      traveler_names: Type.Optional(nullableString()),
+      transportation_type: Type.Optional(nullableString()),
+      transportation: Type.Optional(nullableString()),
+      lodging_required: Type.Optional(nullableBoolean()),
+      lodging_details: Type.Optional(nullableString()),
+      lodging: Type.Optional(nullableString()),
+      notes: Type.Optional(nullableString())
+    },
+    { $id: 'TravelRequestsData', additionalProperties: false }
+  )
+)
 export type TravelRequestsData = Static<typeof travelRequestsDataSchema>
 export const travelRequestsDataValidator = getValidator(travelRequestsDataSchema, dataValidator)
-export const travelRequestsDataResolver = resolve<TravelRequestsData, HookContext<TravelRequestsService>>({})
+export const travelRequestsDataResolver = resolve<TravelRequestsData, HookContext<TravelRequestsService>>({
+  club: async (value) => {
+    if (typeof value === 'string' && value !== '') {
+      return Number.parseInt(value, 10)
+    }
+
+    return value as any
+  },
+  submitted_by: async (value, data, context) => {
+    if (value !== undefined) {
+      return typeof value === 'string' && value !== '' ? Number.parseInt(value, 10) : value
+    }
+
+    if (data.requested_by !== undefined) {
+      return typeof data.requested_by === 'string' && data.requested_by !== ''
+        ? Number.parseInt(data.requested_by, 10)
+        : data.requested_by
+    }
+
+    if (context.params.User?.id) {
+      return context.params.User.id
+    }
+
+    return value
+  },
+  estimated_cost: async (value) => {
+    if (typeof value === 'string' && value !== '') {
+      return Number.parseFloat(value)
+    }
+
+    return value as any
+  },
+  num_travelers: async (value) => {
+    if (typeof value === 'string' && value !== '') {
+      return Number.parseInt(value, 10)
+    }
+
+    return value as any
+  },
+  transportation_type: async (value, data) => {
+    return value ?? data.transportation
+  },
+  lodging_details: async (value, data) => {
+    return value ?? data.lodging
+  }
+})
 
 // Schema for updating existing entries
 export const travelRequestsPatchSchema = Type.Partial(travelRequestsSchema, {

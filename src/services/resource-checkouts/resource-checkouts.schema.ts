@@ -10,6 +10,7 @@ import type { ResourceCheckoutsService } from './resource-checkouts.class'
 const nullableString = () => Type.Union([Type.String(), Type.Null()])
 const nullableNumber = () => Type.Union([Type.Number(), Type.Null()])
 const nullableBoolean = () => Type.Union([Type.Boolean(), Type.Null()])
+const nullableStringArray = () => Type.Union([Type.Array(Type.String()), Type.Null()])
 
 // Main data model schema
 export const resourceCheckoutsSchema = Type.Object(
@@ -27,7 +28,7 @@ export const resourceCheckoutsSchema = Type.Object(
     checkout_time: Type.Optional(nullableString()),
     return_date: Type.Optional(nullableString()),
     return_time: Type.Optional(nullableString()),
-    requested_items: Type.Optional(nullableString()),
+    requested_items: Type.Optional(Type.Union([Type.String(), nullableStringArray()])),
     quantity_notes: Type.Optional(nullableString()),
     return_24hrs: Type.Optional(nullableBoolean()),
     late_return: Type.Optional(nullableBoolean()),
